@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 import cz.habarta.typescript.generator.Input;
 import cz.habarta.typescript.generator.JsonLibrary;
@@ -61,8 +60,14 @@ public class TypescriptUtility {
 		File[] generated = daoFolder.listFiles();
 		for( int i = 0; i < generated.length; i++ ) {
 			String contents = safeReadFile(generated[i].toPath());
-			sb.append(contents);
-			sb.append("\n\n");
+			String[] interfaces = contents.split("\n\n");
+
+			for (int j = 0; j < interfaces.length; j++) {
+				if (sb.indexOf(interfaces[j]) < 0) {
+					sb.append(interfaces[j]);
+					sb.append("\n\n");
+				}
+			}
 		}
 		
 		Files.write(getDaoTypescriptFolder().resolve("protocol.unified.d.ts"), sb.toString().getBytes());
